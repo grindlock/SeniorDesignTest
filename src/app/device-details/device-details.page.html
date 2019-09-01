@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>deviceDetails</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class=padding>
+  <ion-card>
+    <ion-card-header>
+      {{ device.name || "Unnamed"}}
+    </ion-card-header>
+    <ion-card-content>
+      {{ device.id }}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Services
+    </ion-card-header>
+    <ion-list>
+      <ion-item *ngFor="let service of device.services">
+        <p>{{service}}</p>
+        <p *ngFor = "let adv of advertising.kCBAdvDataManufacturerData">ADV Name:  {{adv}}</p>
+      </ion-item>
+      <!-- <ion-item>
+      ADV Name:  {{device.advertising.kCBAdvDataLocalName}}
+        </ion-item>-->
+    </ion-list>
+  </ion-card>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <p>{{ statusMessage }}</p>
+  </ion-toolbar>
+</ion-footer>
