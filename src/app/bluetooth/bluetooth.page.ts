@@ -49,11 +49,11 @@ private bleService: BleService) { }
     console.log('Discovered ' + JSON.stringify(device, null, 2));
     this.ngZone.run(() => {
       this.devices.push(device);
-      if (device.advertising && device.advertising.kCBAdvDataManufacturerData) {
+      //if (device.name == 'RVACSD' && device.advertising.kCBAdvDataManufacturerData) {
        const mfgData = new Uint8Array(device.advertising.kCBAdvDataManufacturerData);
        this.adv = new Uint8Array(device.advertising.kCBAdvDataManufacturerData);
        console.log(' Name is '+device.name+' Manufacturer Data is', mfgData);//mfgData);
-  }
+//  }
     });
   }
 

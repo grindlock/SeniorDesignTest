@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { NavController } from '@ionic/angular';
+//import { Router, RouterEvent, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +9,15 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  selectedPath ="";
+
+  constructor(private navCtrl: NavController) //, private router: Router, private activedRoute: ActivatedRoute)
+  { //this.router.events.subscribe((event:RouterEvent)=>{
+    //this.selectedPath = event.url;});
+  }
+
+  gotoBlue(){
+    this.navCtrl.navigateForward("/bluetooth");
+  }
 
 }

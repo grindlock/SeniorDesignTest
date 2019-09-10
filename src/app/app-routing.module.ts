@@ -4,8 +4,13 @@ import { BleResolverService }from './resolver/ble-resolver.service';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', loadChildren: './home/home.module#HomePageModule' },
-  { path: 'bluetooth', loadChildren: './bluetooth/bluetooth.module#BluetoothPageModule' },
+  { path: 'home',
+    loadChildren: './home/home.module#HomePageModule'
+  },
+  {
+        path: 'bluetooth',
+        loadChildren: './bluetooth/bluetooth.module#BluetoothPageModule'
+  },
   { path: 'device-details', loadChildren: './device-details/device-details.module#DeviceDetailsPageModule'},
   {
     path: 'device-details/:id',
