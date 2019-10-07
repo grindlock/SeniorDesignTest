@@ -37,12 +37,12 @@ private bleService: BleService) { }
     this.setStatus('Scanning for Bluetooth LE Devices');
     this.devices = [];  // clear list
 
-    this.ble.scan([], 10).subscribe(
+    this.ble.scan([], 5).subscribe(
       device => this.onDeviceDiscovered(device),
       error => this.scanError(error)
     );
 
-    setTimeout(this.setStatus.bind(this), 10000, 'Scan complete');
+    //setTimeout(this.setStatus.bind(this), 10000, 'Scan complete');
   }
 
   onDeviceDiscovered(device) {
@@ -78,7 +78,9 @@ private bleService: BleService) { }
   deviceSelected(id, device) {
     console.log(JSON.stringify(device) + ' selected');
     this.bleService.setDevice(device);
+    this.ble.stopScan();
     this.router.navigateByUrl('/device-details/'+id);
+
 
   }
 

@@ -13,6 +13,7 @@ export class DeviceDetailsPage implements OnInit {
   device: any = {};
   sensorData:Uint8Array;
   statusMessage: string;
+  services:any={};
 
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -21,42 +22,36 @@ export class DeviceDetailsPage implements OnInit {
     private ble: BLE,
   public alertController: AlertController) {
 
+    let passDevice = this.route.snapshot.data['special'];
 
+    this.setStatus('Connecting to '+ passDevice.name || passDevice.id);
 
-
-     }
+    this.ble.connect(passDevice.id).subscribe(
+      device => this.onConnected(passDevice),
+      device => this.presentAlert('Disconnected', 'The device unexpectedly disconnected.')
+    );}
 
   ngOnInit() {
-    //if (this.route.snapshot.data['special']){
-      let passDevice = this.route.snapshot.data['special'];
-
-      this.setStatus('Connecting to '+ passDevice.name || passDevice.id);
-
-      this.ble.connect(passDevice.id).subscribe(
-        device => this.onConnected(passDevice),
-        device => this.onDeviceDisconnected(passDevice)
-      );
-
-    //}
   }
 
   onConnected(device){
     //this.ngZone.run(() => {
     this.device = device;
       this.setStatus('Connected to '+(device.name || device.id));
+console.log('Discovered ' + JSON.stringify(this.device, null, 2));
+//'D0AF', '6B7B'   '301E', 'C083'
+      this.ble.startNotification(this.device.id, 'D0AF', '6B7B').subscribe(
+        data=>{this.onSensorsData(data);},
+        error=> {this.presentAlert('Unexpected Error', error);}
 
-      this.ble.startNotification(this.device.id, "D0AF", "6B7B").subscribe(
-        data=>this.onSensorsData(data),
-        error=> this.presentAlert('Unexpected Error', error)
-
-      )
+      );
     //})
   }
 
-onSensorsData(buffer:ArrayBuffer){
+  onSensorsData(buffer:ArrayBuffer){
   var data = new Uint8Array(buffer);
   console.log("***  DATA NOTIFICATION  *** ", data);
-  this.ngZone.run(() =>{
+   this.ngZone.run(() =>{
     this.sensorData = data;
   });
 }
