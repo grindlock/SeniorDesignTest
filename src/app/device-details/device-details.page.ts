@@ -1,7 +1,9 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastController, AlertController } from '@ionic/angular';
+import { ToastController, AlertController, NavController } from '@ionic/angular';
 import { BLE } from '@ionic-native/ble/ngx';
+import { INJECTOR_BLOOM_PARENT_SIZE } from '@angular/core/src/render3/interfaces/injector';
+import 'p5';
 
 @Component({
   selector: 'app-device-details',
@@ -14,6 +16,12 @@ export class DeviceDetailsPage implements OnInit {
   sensorData:Uint8Array;
   statusMessage: string;
   services:any={};
+
+  @ViewChild('canvas') canvaEl: ElementRef;
+  private _CANVAS: any;
+  private _CONTEXT: any;
+
+  private p5;
 
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -29,11 +37,69 @@ export class DeviceDetailsPage implements OnInit {
     this.ble.connect(passDevice.id).subscribe(
       device => this.onConnected(passDevice),
       device => this.presentAlert('Disconnected', 'The device unexpectedly disconnected.')
-    );}
+      
+    );
+    
+  }
+/*ionViewDidEnter(){
+  this._CANVAS = this.canvaEl.nativeElement;
+  this._CANVAS.width = 300;
+  this._CANVAS.height = 300;
+  this.initialiseCanvas();
+  
+}*/
 
-  ngOnInit() {
+
+  initialiseCanvas() {
+    if(this._CANVAS.getContext){
+      this.setupCanvas();
+    }
+  }
+  setupCanvas() {
+    this._CONTEXT = this._CANVAS.getContext('2d');
+    this._CONTEXT.fillStyle = "#3e3e3e";
+    this._CONTEXT.fillRect(0,0,500,500);
   }
 
+/*constrain(n, low, high) {
+    return Math.max(Math.min(n, high), low);
+  };*/
+/* this function comes from p5.js  and stackoverflow question 
+https://stackoverflow.com/questions/44338698/p5-js-map-function-in-python
+all rights are from p5.js 
+  map(n, start1, stop1, start2, stop2) {
+    return ((n-start1)/(stop1-start1))*(stop2-start2)+start2;
+  }*/
+
+  drawGraph(){
+    var spectrum: any[];
+    for(var i = 0; i < spectrum.length; i++){
+      var amp = spectrum[i];
+     // var y = this.map(amp, 0, 1, height, 0);
+      this._CONTEXT.rect(this._CANVAS.width, this._CANVAS.height, 200, 200);
+    }
+      this._CONTEXT.lineWidth = 1;
+      this._CONTEXT.strokeStyle = '#ffffff';
+      this._CONTEXT.stroke();
+    
+
+  }
+  ngOnInit() {
+    this.createCanvas();
+  }
+private createCanvas(){
+  this.p5 = new this.p5(this.sketch);
+}
+private sketch(p: any) {
+  p.setup = () => {
+    p.createCanvas(200,200).parent('canvas');
+  };
+  p.draw = () => {
+    p.background(255);
+    p.fill(0);
+    p.rect(p.width / 2, p.height / 2, 50, 50);
+  };
+}
   onConnected(device){
     //this.ngZone.run(() => {
     this.device = device;
@@ -88,5 +154,7 @@ console.log('Discovered ' + JSON.stringify(this.device, null, 2));
       ()=>console.log('ERROR disconnecting '+JSON.stringify(this.device))
     )
   }
+
+  
 
 }
